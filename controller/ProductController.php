@@ -1,9 +1,9 @@
 <?php
 	// Include config.php file
-	include_once './config.php';
+	include_once './db.php';
 
 	// Create a class Users
-	class ProductController extends Config {
+	class ProductController extends DB {
 	  // Fetch all or a single user from database
 	  public function fetch($id = 0) {
 	    $sql = 'SELECT * FROM products';

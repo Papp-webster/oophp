@@ -1,5 +1,5 @@
 <?php
-	class Config {
+	class DB {
 	  // Database Details
 	  private const DBHOST = 'localhost';
 	  private const DBUSER = 'root';
