@@ -1,0 +1,7 @@
+RewriteEngine On
+
+#Remove .php extension form products.php
+RewriteRule ^products/?$ products.php [NC,L]
+
+#Rewrite URL
+RewriteRule ^products/([0-9]+)/?$ products.php?id=$1 [NC,L]
