@@ -14,6 +14,8 @@ $api = $_SERVER['REQUEST_METHOD'];
 $id = intval($_GET['id'] ?? '');
 
 
+
+
 // Get all or a single products from database
 if ($api == 'GET') {
 	if ($id != 0) {
@@ -23,6 +25,19 @@ if ($api == 'GET') {
 	}
 	echo json_encode($data);
 }
+
+/* Search products
+if ($api == 'GET') {
+	$name = $products->test_input($_GET['name']);
+	$data = $products->search($name);
+	if (!$data) {
+		echo $products->message('Nothing found!');
+	} else {
+		echo json_encode($data);
+	}
+	
+	
+}*/
 
 // Add a new products into database
 if ($api == 'POST') {

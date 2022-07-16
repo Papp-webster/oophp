@@ -23,7 +23,16 @@
 	    $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price]);
 	    return true;
 	  }
-
+      
+	  // search products
+	  public function search($name) {
+		$sql = "SELECT * FROM products WHERE name LIKE '%" .$name. "%'";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+		return $result;
+	}
+	  
 	  // Update an user in the database
 	  public function update($name, $description, $price, $id) {
 	    $sql = 'UPDATE products SET name = :name, description = :description, price = :price WHERE id = :id';
