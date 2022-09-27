@@ -1,7 +1,10 @@
 RewriteEngine On
 
-#Remove .php extension form products.php
-RewriteRule ^products/?$ products.php [NC,L]
+
+#Remove .php extension form users.php
+RewriteRule ^users/?$ users.php [NC,L]
+
 
 #Rewrite URL
-RewriteRule ^products/([0-9]+)/?$ products.php?id=$1 [NC,L]
+RewriteRule ^users/([0-9]+)/?$ users.php?id=$1 [NC,L]
+#RewriteRule ^(users)/(\w+)/?$ $1.php?token=$2 [L,QSA,NC]
