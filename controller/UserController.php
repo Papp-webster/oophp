@@ -44,7 +44,7 @@
 			
             // Token with experied date
 			if ($getTokenTime['token_experied'] <= $current_date) {
-				return 'A token' . $days . ' nap múlva lejárt!';
+				return 'A token ' . $days . ' napig volt érvényes!';
 				die();
 			} else {
 		     $stmt = $this->conn->prepare('UPDATE token_type SET token_experied = ? WHERE token_id = ?');
