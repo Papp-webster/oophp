@@ -43,7 +43,7 @@
 			}*/
 			
             // Token with experied date
-			if ($getTokenTime['token_experied'] == $current_date) {
+			if ($getTokenTime['token_experied'] <= $current_date) {
 				return 'A token' . $days . ' nap múlva lejárt!';
 				die();
 			} else {
@@ -107,18 +107,14 @@
 			return $token;
 			
 		}
-		
-		
 
-
-
-	  // Insert an user in the database
+	  /* Insert an user in the database
 	  public function insert($name, $description, $price) {
 	    $sql = 'INSERT INTO products (name, description, price) VALUES (:name, :description, :price)';
 	    $stmt = $this->conn->prepare($sql);
 	    $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price]);
 	    return true;
-	  }
+	  }*/
       
 	  /* search users
 	  public function search($name) {
