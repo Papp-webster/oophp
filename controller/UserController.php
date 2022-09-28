@@ -7,28 +7,51 @@
 	class UserController extends DB {
 		
 	  // Fetch all or a single user from database
-	  public function allData($id = 0) {
+	  public function allData($id = 0, $token='') {
 		if(isset($_GET['token'])) {
 		
 		$token = $_GET['token'];
-		$code = 'U06FJ0aoNE6c02PUGdEdH32bcH3LhE14AFigBhCVWH8Ko5gh4OmlbD2e7pbl9';
+		$code = '3ZIP8zAGCsS8ruN2uKjIaIargXwnmVhLE0Wg6kw0_MQz66hrFDATxrG9w14QY9w9XYbpcJnrFUDwp5lPPFC157dHxbkKlDiQLIvwOwUaxz761m1JfRp4rs8Mzozk5xhS';
 		$hit = 5;
-		$stmt = $this->conn->prepare('SELECT id,token_id,hit_count FROM token_permissions WHERE token_id = ?');
+		// token date time 
+        $current_time = time();
+		$current_date = date("Y-m-d H:i:s", $current_time);
+		$expire_time = strtotime("+ 6 days");
+		$expire_date = date("Y-m-d H:i:s", $expire_time);
+		$days=ceil(($expire_time-time())/60/60/24);
+		
+		
+		/* Token with hit count (5)
+		$stmt = $this->conn->prepare('SELECT id,hit_count FROM token_permissions WHERE token_id = ?');
 		$stmt->execute([$token]);
-		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
+		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);*/
+
+		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE token_id = ?');
+		$stmt->execute([$token]);
+		$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
 		
 		
-		if ($getToken['token_id'] == $code)  {
+		if ($getTokenTime['token_id'] == $code)  {
 			
+			/* Token with hit count (5)
 			if ($getToken['hit_count'] > $hit) {
 				return 'A token lejárt!';
 				die();
 			} else {
 		     $stmt = $this->conn->prepare('UPDATE token_permissions SET hit_count = ? WHERE token_id = ?');
 		     $stmt->execute([$getToken['hit_count'] + 1,$token]);
+			}*/
+			
+            // Token with experied date
+			if ($getTokenTime['token_experied'] == $current_date) {
+				return 'A token' . $days . ' nap múlva lejárt!';
+				die();
+			} else {
+		     $stmt = $this->conn->prepare('UPDATE token_type SET token_experied = ? WHERE token_id = ?');
+		     $stmt->execute([$expire_date,$token]);
 			}
 
-			$sql = 'SELECT token_type.token_valid, 
+			$sql = 'SELECT token_type.token_id,token_type.token_experied, 
 			token_permissions.permissions as permissions,
 			token_permissions.table_id as table_id, 
 			user.name as user_name,

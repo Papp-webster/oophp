@@ -12,6 +12,7 @@ $api = $_SERVER['REQUEST_METHOD'];
 
 // get id from url
 $id = intval($_GET['id'] ?? '');
+$token = $_GET['token'] ?? '';
 
 /*$token = $users->generateToken();
 
@@ -23,7 +24,7 @@ foreach($token as $result) {
 
 if ($api == 'GET') {
 	if ($id != 0) {
-		$data = $users->allData($id);
+		$data = $users->allData($id,$token);
 	} else {
 		$data = $users->allData();
 	}
