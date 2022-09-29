@@ -14,12 +14,6 @@ $api = $_SERVER['REQUEST_METHOD'];
 $id = intval($_GET['id'] ?? '');
 $token = $_GET['token'] ?? '';
 
-/*$token = $users->generateToken();
-
-foreach($token as $result) {
-    echo $result;
-}*/
-
 // Get all or a single users from database
 
 if ($api == 'GET') {
