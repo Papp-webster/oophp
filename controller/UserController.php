@@ -38,7 +38,7 @@
 			
 	 
 			$token = $_GET['token'];
-			$code = 'E5bCQN995ncdCmc0cImb6apUSjn9fDdUiCZcS2KhRLd65WT91C8JPh41495fdH10og93pTbgVdf72gk8hYf57V87X60';
+			$code = 'fZj9bGd5bh60iGpl907900493A11k8JI0g57DLccb83CgOidmhR48bFOAP4kiR8ogi7L6eAk9IpR8VoY9837D0G3Mbf';
 			$hit = 5;
 			// token date current time 
 			$current_date = date("Y-m-d H:i:s", time());
@@ -72,8 +72,12 @@
 					
 					// Token with experied date
 					if ($getTokenTime['token_experied'] <= $current_date) {
+						
 						$stmt = $this->conn->prepare('UPDATE token_type SET token_id = ?, token_created = ?,token_experied = ? WHERE token_id = ?');
 						$stmt->execute([$tokengenerate,$current_date,$expire_date,$token]);
+						
+						$permissions = $this->conn->prepare('UPDATE token_permissions SET token_id = ? WHERE token_id = ?');
+						$permissions->execute([$tokengenerate,$token]);
 						return 'A token ' . $days . ' napig volt érvényes!';
 						die();
 					} else {
