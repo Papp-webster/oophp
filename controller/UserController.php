@@ -43,8 +43,9 @@
 			// token date current time 
 			$current_date = date("Y-m-d H:i:s", time());
 			// token date time end
-			$expire_date = date("Y-m-d H:i:s", strtotime("+ 6 days"));
-			$days=ceil((strtotime("+ 22 days")-time())/60/60/24);
+			$experied_time = strtotime("+ 22 days");
+			$expire_date = date("Y-m-d H:i:s", $experied_time);
+			$days=ceil(($experied_time-time())/60/60/24);
 			
 			
 			/* Token with hit count (5)
