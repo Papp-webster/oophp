@@ -41,8 +41,7 @@
 			$code = 'K8Ebl37ndddMK104S1E67885bcgbTfA82hUMC1a232d01XOb75gMkWKO1R7bIfjM17H5dFU9JeX2P5lG2bHPnchQ2Zb';
 			$hit = 5;
 			// token date time 
-			$current_time = time();
-			$current_date = date("Y-m-d H:i:s", $current_time);
+			$current_date = date("Y-m-d H:i:s", time());
 			$expire_time = strtotime("+ 6 days");
 			$expire_date = date("Y-m-d H:i:s", $expire_time);
 			$days=ceil(($expire_time-time())/60/60/24);
