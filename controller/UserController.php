@@ -52,6 +52,7 @@
 			$stmt->execute([$token]);
 			$getToken = $stmt->fetch(PDO::FETCH_ASSOC);*/
 
+			// Get token 
 			$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE token_id = ?');
 			$stmt->execute([$token]);
 			$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
