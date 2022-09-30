@@ -77,6 +77,7 @@
 					} else {
 						$stmt = $this->conn->prepare('UPDATE token_type SET token_experied = ? WHERE token_id = ?');
 						$stmt->execute([$expire_date,$token]);
+						die();
 					}
 
 					$sql = 'SELECT token_type.token_id,token_type.token_experied, 
