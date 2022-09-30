@@ -52,7 +52,7 @@
 			$stmt->execute([$token]);
 			$getToken = $stmt->fetch(PDO::FETCH_ASSOC);*/
 
-			// Get token 
+			// Get token
 			$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE token_id = ?');
 			$stmt->execute([$token]);
 			$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -78,7 +78,6 @@
 					} else {
 						$stmt = $this->conn->prepare('UPDATE token_type SET token_experied = ? WHERE token_id = ?');
 						$stmt->execute([$expire_date,$token]);
-						die();
 					}
 
 					$sql = 'SELECT token_type.token_id,token_type.token_experied, 
@@ -138,7 +137,6 @@
 	    $stmt->execute(['name' => $name, 'description' => $description, 'price' => $price, 'id' => $id]);
 	    return true;
 	  }
-
 	  // Delete an user from database
 	  public function delete($id) {
 	    $sql = 'DELETE FROM products WHERE id = :id';
