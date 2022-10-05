@@ -59,7 +59,7 @@
 			$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
 		
 		
-				if (is_array($getTokenTime) == $code)  {
+				if ($getTokenTime['token_id'] == $code)  {
 					
 					/* Token with hit count (5)
 					if ($getToken['hit_count'] > $hit) {
