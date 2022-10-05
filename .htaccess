@@ -1,10 +1,11 @@
 RewriteEngine On
-
+# Let files and folder through
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 
 #Remove .php extension form users.php
 RewriteRule ^users/?$ users.php [NC,L]
 
-
 #Rewrite URL
-RewriteRule ^users/([0-9]+)/?$ users.php?id=$1 [NC,L]
-#RewriteRule ^(users)/(\w+)/?$ $1.php?token=$2 [L,QSA,NC]
+#RewriteRule ^users/([0-9]+)/?$ users.php?id=$1 [NC,L]
+RewriteRule ^(users)/(\w+)/?$ $1.php?token=$2 [L,QSA,NC]
