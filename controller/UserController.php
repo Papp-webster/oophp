@@ -38,7 +38,7 @@
 			
 	 
 			$token = $_GET['token'];
-			$code = 'fZj9bGd5bh60iGpl907900493A11k8JI0g57DLccb83CgOidmhR48bFOAP4kiR8ogi7L6eAk9IpR8VoY9837D0G3Mbf';
+			$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
 			$hit = 5;
 			// token date current time 
 			$current_date = date("Y-m-d H:i:s", time());
@@ -59,7 +59,7 @@
 			$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
 		
 		
-				if ($getTokenTime['token_id'] == $code)  {
+				if (is_array($getTokenTime) == $code)  {
 					
 					/* Token with hit count (5)
 					if ($getToken['hit_count'] > $hit) {
