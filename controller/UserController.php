@@ -6,11 +6,10 @@
 	// Create a class Users
 	class UserController extends DB {
 
-		/*public function generateToken()
+		/*public function generateToken($length = 0)
 		{
-			$len = 90;
 			$token = array();
-			for ($i = 0; $i <= $len; $i++) {
+			for ($i = 0; $i <= $length; $i++) {
 			$ord = 0;
 			switch(rand(1,3)) {
 				case 1: // 0 - 9
