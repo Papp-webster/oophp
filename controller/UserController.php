@@ -47,7 +47,7 @@
 			
 		if($code == $getToken['token_id']) {
             /*token generator
-			$tokengenerate = implode($this->generateToken());*/
+			$tokengenerate = implode($this->generateToken(60));*/
 			// token date current time 
 			$current_date = date("Y-m-d H:i:s", time());
 			// token date time end
