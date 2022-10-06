@@ -6,7 +6,7 @@
 	// Create a class Users
 	class UserController extends DB {
 
-		public function generateToken()
+		/*public function generateToken()
 		{
 			$len = 90;
 			$token = array();
@@ -28,19 +28,25 @@
 			}
 			return $token;
 			
-		}
+		}*/
 		
 	  // Fetch all or a single user from database
 	  public function allData($id = 0) {
-		
-		$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
-
 		// Get token
 		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE user_id = ?');
 		$stmt->execute([$id]);
 		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
+
+		// Check token
+		$headers = apache_request_headers();
+
+		$token = strval(str_replace('Bearer', '',$headers['Authorization']));
+
+		
 			
-		if($getToken['token_id'] == $code) {
+		if($code == $getToken['token_id']) {
             /*token generator
 			$tokengenerate = implode($this->generateToken());*/
 			// token date current time 
