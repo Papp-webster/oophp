@@ -12,13 +12,13 @@ $api = $_SERVER['REQUEST_METHOD'];
 
 // get id from url
 $id = intval($_GET['id'] ?? '');
-$token = $_GET['token'] ?? '';
+
 
 // Get all or a single users from database
 
 if ($api == 'GET') {
 	if ($id != 0) {
-		$data = $users->allData($id,$token);
+		$data = $users->allData($id);
 	} else {
 		$data = $users->allData();
 	}

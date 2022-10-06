@@ -31,35 +31,25 @@
 		}
 		
 	  // Fetch all or a single user from database
-	  public function allData($id = 0, $token='') {
-			if(isset($_GET['token'])) {
-            //token generator
-			$tokengenerate = implode($this->generateToken());
+	  public function allData($id = 0) {
+		
+		$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
+
+		// Get token
+		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE user_id = ?');
+		$stmt->execute([$id]);
+		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
 			
-	 
-			$token = $_GET['token'];
-			$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
-			$hit = 5;
+		if($getToken['token_id'] == $code) {
+            /*token generator
+			$tokengenerate = implode($this->generateToken());*/
 			// token date current time 
 			$current_date = date("Y-m-d H:i:s", time());
 			// token date time end
-			$experied_time = strtotime("+ 22 days");
-			$expire_date = date("Y-m-d H:i:s", $experied_time);
-			$days=ceil(($experied_time-time())/60/60/24);
+			$experied_time = strtotime($getToken['token_experied']);
+			// token experied time
+			$days=($experied_time-strtotime($getToken['token_created']))/86400;
 			
-			
-			/* Token with hit count (5)
-			$stmt = $this->conn->prepare('SELECT id,hit_count FROM token_permissions WHERE token_id = ?');
-			$stmt->execute([$token]);
-			$getToken = $stmt->fetch(PDO::FETCH_ASSOC);*/
-
-			// Get token
-			$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE token_id = ?');
-			$stmt->execute([$token]);
-			$getTokenTime = $stmt->fetch(PDO::FETCH_ASSOC);
-		
-		
-				if ($getTokenTime['token_id'] == $code)  {
 					
 					/* Token with hit count (5)
 					if ($getToken['hit_count'] > $hit) {
@@ -71,21 +61,12 @@
 					}*/
 					
 					// Token with experied date
-					if ($getTokenTime['token_experied'] <= $current_date) {
-						
-						$stmt = $this->conn->prepare('UPDATE token_type SET token_id = ?, token_created = ?,token_experied = ? WHERE token_id = ?');
-						$stmt->execute([$tokengenerate,$current_date,$expire_date,$token]);
-						
-						$permissions = $this->conn->prepare('UPDATE token_permissions SET token_id = ? WHERE token_id = ?');
-						$permissions->execute([$tokengenerate,$token]);
-						return 'A token ' . $days . ' napig volt érvényes!';
+					if ($getToken['token_experied'] <= $current_date) {
+						return 'A token ' . round($days,0) . ' napig volt érvényes!';
 						die();
-					} else {
-						$stmt = $this->conn->prepare('UPDATE token_type SET token_experied = ? WHERE token_id = ?');
-						$stmt->execute([$expire_date,$token]);
-					}
+					} 
 
-					$sql = 'SELECT token_type.token_id,token_type.token_experied, 
+					$sql = 'SELECT token_type.token_id,token_type.user_id,token_type.token_experied, 
 					token_permissions.permissions as permissions,
 					token_permissions.table_id as table_id, 
 					user.name as user_name,
@@ -97,7 +78,7 @@
 					LEFT JOIN db_publisher
 					ON db_publisher.id = user.db_publisher_id';
 					if ($id != 0) {
-						$sql .= ' WHERE token_type.id = ' . $id;
+						$sql .= ' WHERE token_type.user_id = ' . $id;
 					}
 					$result = $this->conn->prepare($sql);
 					$numRows = $result->execute();
@@ -107,10 +88,6 @@
 							}
 							return $data;
 						}
-				} else {
-					return 'Helytelen token!';
-					die();
-				}
 	    
 			} else {
 				return print_r(json_encode(['status'=> 401,'message' =>'Authentikációs token szükséges!']));
