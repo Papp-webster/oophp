@@ -23,9 +23,9 @@ if ($api == 'GET') {
 			$users->auth()
 		);
 		if ($id != 0) {
-			$data = $users->allData($id);
+			$data = $users->readUsers($id);
 		} else {
-			$data = $users->allData();
+			$data = $users->readUsers();
 		}
 		echo json_encode($data);
    } else {

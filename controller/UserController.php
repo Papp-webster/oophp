@@ -8,7 +8,7 @@
 	// Create a class Users
 	class UserController extends DB {
 
-		private $key = "secret_key";
+		private $key = 'secret_key';
 
 		/*public function generateToken($length = 0)
 		{
@@ -51,46 +51,26 @@
 		}
 		
 	  // Fetch all or a single user from database
-	  public function allData($id = 0) {
-		// Get token
+	  public function readUsers($id = 0) {
+		/* Get token
 		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE user_id = ?');
 		$stmt->execute([$id]);
 		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
 
 		$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
-
+        */
+		
 		// Check token
 		$headers = apache_request_headers();
 
-		$token = str_replace('Bearer', '',$headers['Authorization']);
-			
-		
-            /*token generator
-			$tokengenerate = implode($this->generateToken(60));*/
-			// token date current time 
-			//$current_date = date("Y-m-d H:i:s", time());
-			// token date time end
-			//$experied_time = strtotime($getToken['token_experied']);
-			// token experied time
-			//$days=($experied_time-strtotime($getToken['token_created']))/86400;
-			
-					
-					/* Token with hit count (5)
-					if ($getToken['hit_count'] > $hit) {
-						return 'A token lejárt!';
-						die();
-					} else {
-						$stmt = $this->conn->prepare('UPDATE token_permissions SET hit_count = ? WHERE token_id = ?');
-						$stmt->execute([$getToken['hit_count'] + 1,$token]);
-					}*/
-					
-					/* Token with experied date
-					if ($getToken['token_experied'] <= $current_date) {
-						return 'A token ' . round($days,0) . ' napig volt érvényes!';
-						die();
-					}*/ 
+		if(isset($headers['Authorization'])) {	
+		    
+			$token = str_replace('Bearer', '',$headers['Authorization']);
+		    
+			try {
+				$token = JWT::decode($token, $this->key, array('HS512'));
 
-					$sql = 'SELECT token_type.token_id,token_type.user_id,token_type.token_experied, 
+				$sql = 'SELECT token_type.token_id,token_type.user_id,token_type.token_experied, 
 					token_permissions.permissions as permissions,
 					token_permissions.table_id as table_id, 
 					user.name as user_name,
@@ -112,6 +92,39 @@
 							}
 							return $data;
 						}
+			} catch (\Exception $e) {
+				return false;
+			}
+		} else {
+			return false;
+		}	
+		
+            /*token generator
+			$tokengenerate = implode($this->generateToken(60));*/
+			// token date current time 
+			//$current_date = date("Y-m-d H:i:s", time());
+			// token date time end
+			//$experied_time = strtotime($getToken['token_experied']);
+			// token experied time
+			//$days=($experied_time-strtotime($getToken['token_created']))/86400;
+			
+					
+				/* Token with hit count (5)
+				if ($getToken['hit_count'] > $hit) {
+					return 'A token lejárt!';
+					die();
+				} else {
+					$stmt = $this->conn->prepare('UPDATE token_permissions SET hit_count = ? WHERE token_id = ?');
+					$stmt->execute([$getToken['hit_count'] + 1,$token]);
+				}*/
+				
+				/* Token with experied date
+				if ($getToken['token_experied'] <= $current_date) {
+					return 'A token ' . round($days,0) . ' napig volt érvényes!';
+					die();
+				}*/ 
+
+					
 	  }
 
 	  /* Insert an user in the database
