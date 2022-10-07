@@ -1,10 +1,14 @@
 <?php
 	// Include config.php file
 	include_once './db.php';
-	
+	include_once './vendor/autoload.php';
+
+	use \Firebase\JWT\JWT;
 
 	// Create a class Users
 	class UserController extends DB {
+
+		private $key = "secret_key";
 
 		/*public function generateToken($length = 0)
 		{
@@ -28,6 +32,23 @@
 			return $token;
 			
 		}*/
+        // JWT token authorize 
+		public function auth() {
+              $iat = time();
+			  $exp = date("Y-M-d H:i:s",$iat + 60 * 60);
+			  $payload = array(
+				"iss" => "http://localhost:8080/oophp",
+				"aud" => "http://localhost:8080",
+				"iat" => $iat,
+				"exp" => $exp
+			  );
+			  $jwt = JWT::encode($payload,$this->key, 'HS512');
+			  $token_data['Jwt'] = array(
+				"token" => $jwt,
+				"expires" => $exp
+			  );
+			  return $token_data;
+		}
 		
 	  // Fetch all or a single user from database
 	  public function allData($id = 0) {
@@ -41,19 +62,17 @@
 		// Check token
 		$headers = apache_request_headers();
 
-		$token = strval(str_replace('Bearer', '',$headers['Authorization']));
-
-		
+		$token = str_replace('Bearer', '',$headers['Authorization']);
 			
-		if($code == $getToken['token_id']) {
+		
             /*token generator
 			$tokengenerate = implode($this->generateToken(60));*/
 			// token date current time 
-			$current_date = date("Y-m-d H:i:s", time());
+			//$current_date = date("Y-m-d H:i:s", time());
 			// token date time end
-			$experied_time = strtotime($getToken['token_experied']);
+			//$experied_time = strtotime($getToken['token_experied']);
 			// token experied time
-			$days=($experied_time-strtotime($getToken['token_created']))/86400;
+			//$days=($experied_time-strtotime($getToken['token_created']))/86400;
 			
 					
 					/* Token with hit count (5)
@@ -65,11 +84,11 @@
 						$stmt->execute([$getToken['hit_count'] + 1,$token]);
 					}*/
 					
-					// Token with experied date
+					/* Token with experied date
 					if ($getToken['token_experied'] <= $current_date) {
 						return 'A token ' . round($days,0) . ' napig volt érvényes!';
 						die();
-					} 
+					}*/ 
 
 					$sql = 'SELECT token_type.token_id,token_type.user_id,token_type.token_experied, 
 					token_permissions.permissions as permissions,
@@ -89,15 +108,10 @@
 					$numRows = $result->execute();
 						if ($numRows > 0) {
 							while ($row = $result->fetchAll()) {
-								$data[] = $row;
+								$data['User'] = $row;
 							}
 							return $data;
 						}
-	    
-			} else {
-				return print_r(json_encode(['status'=> 401,'message' =>'Authentikációs token szükséges!']));
-				die();
-			}
 	  }
 
 	  /* Insert an user in the database

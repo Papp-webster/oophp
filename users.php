@@ -17,12 +17,25 @@ $id = intval($_GET['id'] ?? '');
 // Get all or a single users from database
 
 if ($api == 'GET') {
-	if ($id != 0) {
-		$data = $users->allData($id);
-	} else {
-		$data = $users->allData();
-	}
-	echo json_encode($data);
+	if($users->auth()) {
+		http_response_code(200);
+		echo json_encode(
+			$users->auth()
+		);
+		if ($id != 0) {
+			$data = $users->allData($id);
+		} else {
+			$data = $users->allData();
+		}
+		echo json_encode($data);
+   } else {
+	http_response_code(404);
+	 echo json_encode(
+		array(
+		"status" => 404,
+		'message' => 'Authentikációs token szükséges!'
+	));
+   }
 }
 
 /* Search users
