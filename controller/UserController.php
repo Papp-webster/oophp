@@ -62,8 +62,6 @@
 		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE user_id = ?');
 		$stmt->execute([$id]);
 		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
-
-		$code = 'ji111eFb1iY9684CbSG0nigpl30bRVgKeKlTH9E70DCB7X5WXGTBF3PGZ914XHei92lSV12lhje6EVlaOja6gh4c28d';
         */
 		
 		// Check token
