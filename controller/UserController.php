@@ -68,9 +68,9 @@
 			$token = str_replace('Bearer', '',$headers['Authorization']);
 		    
 			try {
-				$token = JWT::decode($token, $this->key, array('HS512'));
+				//$token = JWT::decode($token, $this->key, array('HS512'));
 
-				$sql = 'SELECT token_type.token_id,token_type.user_id,token_type.token_experied, 
+				$sql = 'SELECT token_type.user_id,token_type.token_experied, 
 					token_permissions.permissions as permissions,
 					token_permissions.table_id as table_id, 
 					user.name as user_name,
@@ -91,7 +91,7 @@
 								$data['User'] = $row;
 							}
 							return $data;
-						}
+						} 
 			} catch (\Exception $e) {
 				return false;
 			}
