@@ -4,11 +4,13 @@
 	include_once './vendor/autoload.php';
 
 	use \Firebase\JWT\JWT;
+	use Firebase\JWT\Key;
+
 
 	// Create a class Users
 	class UserController extends DB {
 
-		private $key = 'secret_key';
+		protected $key = 'secretkey';
 
 		/*public function generateToken($length = 0)
 		{
@@ -35,16 +37,20 @@
         // JWT token authorize 
 		public function auth() {
               $iat = time();
-			  $exp = date("Y-M-d H:i:s",$iat + 60 * 60);
+			  $exp = $iat + 60 * 60;
 			  $payload = array(
 				"iss" => "http://localhost:8080/oophp",
 				"aud" => "http://localhost:8080",
 				"iat" => $iat,
+				"username" => "Jhon doe",
 				"exp" => $exp
 			  );
 			  $jwt = JWT::encode($payload,$this->key, 'HS512');
-			  $token_data['Jwt'] = array(
+			 
+			
+			  $token_data[] = array(
 				"token" => $jwt,
+				"iat" => $iat,
 				"expires" => $exp
 			  );
 			  return $token_data;
@@ -65,11 +71,23 @@
 
 		if(isset($headers['Authorization'])) {	
 		    
-			$token = str_replace('Bearer', '',$headers['Authorization']);
-		    
-			try {
-				//$token = JWT::decode($token, $this->key, array('HS512'));
+			//$token = str_replace('Bearer ', '',$headers['Authorization']);
+			$auth = $this->auth();
+			$token = $auth[0]['token'];
+			
+			// Decode token
+			
+			$decoded = JWT::decode($token, new Key($this->key, 'HS512'));
 
+			// Check token expire
+			$iat = $decoded->iat;
+			$exp = $decoded->exp;
+
+			if($exp >= $iat) {
+			
+			try {
+				
+                 
 				$sql = 'SELECT token_type.user_id,token_type.token_experied, 
 					token_permissions.permissions as permissions,
 					token_permissions.table_id as table_id, 
@@ -96,7 +114,16 @@
 				return false;
 			}
 		} else {
-			return false;
+			return array('status' => 401, 'message' => 'Authentikációs token lejárt!');
+		}
+		} else {
+		   http_response_code(401);
+	            return print_r(json_encode(
+					array(
+					"status" => 401,
+					'message' => 'Authentikációs token hiányzik!'
+				)));
+				
 		}	
 		
             /*token generator
