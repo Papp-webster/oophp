@@ -42,7 +42,6 @@
 				"iss" => "http://localhost:8080/oophp",
 				"aud" => "http://localhost:8080",
 				"iat" => $iat,
-				"username" => "Jhon doe",
 				"exp" => $exp
 			  );
 			  $jwt = JWT::encode($payload,$this->key, 'HS512');
@@ -58,20 +57,27 @@
 		
 	  // Fetch all or a single user from database
 	  public function readUsers($id = 0) {
-		/* Get token
-		$stmt = $this->conn->prepare('SELECT id,token_id,token_created,token_experied FROM token_type WHERE user_id = ?');
-		$stmt->execute([$id]);
-		$getToken = $stmt->fetch(PDO::FETCH_ASSOC);
-        */
+		
 		
 		// Check token
 		$headers = apache_request_headers();
 
 		if(isset($headers['Authorization'])) {	
 		    
-			//$token = str_replace('Bearer ', '',$headers['Authorization']);
+			$bearerToken = str_replace('Bearer ', '',$headers['Authorization']);
 			$auth = $this->auth();
 			$token = $auth[0]['token'];
+
+	    //Get publisher token
+		$stmt = $this->conn->prepare('SELECT id FROM db_publisher WHERE api_token = ?');
+		$stmt->execute([$bearerToken]);
+		$publisher = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		
+
+
+
+		
 			
 			// Decode token
 			
@@ -84,30 +90,31 @@
 			if($exp >= $iat) {
 			
 			try {
-				
-                 
-				$sql = 'SELECT token_type.user_id,token_type.token_experied, 
-					token_permissions.permissions as permissions,
-					token_permissions.table_id as table_id, 
-					user.name as user_name,
-					user.email as user_email, 
-					db_publisher.name as publisher_name
-					FROM token_type
-					LEFT JOIN token_permissions ON token_type.token_id = token_permissions.token_id  
-					LEFT JOIN user ON token_type.user_id = user.id
-					LEFT JOIN db_publisher
-					ON db_publisher.id = user.db_publisher_id';
+				 
+				if($id == $publisher['id']) {
+					
+					//Get users under publisher
+					$query = 'SELECT user.id, user.name_last, token_type.token_experied FROM user 
+					LEFT JOIN token_type ON user.id = token_type.user_id';
 					if ($id != 0) {
-						$sql .= ' WHERE token_type.user_id = ' . $id;
+					   $query .= ' WHERE user.db_publisher_id = ?';
 					}
-					$result = $this->conn->prepare($sql);
-					$numRows = $result->execute();
+					
+					
+					$result = $this->conn->prepare($query);
+					$numRows = $result->execute([$publisher['id']]);
+					
 						if ($numRows > 0) {
 							while ($row = $result->fetchAll()) {
-								$data['User'] = $row;
+								$data['Users'] = $row;
 							}
-							return $data;
-						} 
+						
+						return $data;
+						}
+				} else {
+					
+					return array('message' => 'Nem található felhasználó!');
+				} 
 			} catch (\Exception $e) {
 				return false;
 			}
