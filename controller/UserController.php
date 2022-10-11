@@ -72,12 +72,6 @@
 		$stmt = $this->conn->prepare('SELECT id FROM db_publisher WHERE api_token = ?');
 		$stmt->execute([$bearerToken]);
 		$publisher = $stmt->fetch(PDO::FETCH_ASSOC);
-
-		
-
-
-
-		
 			
 			// Decode token
 			
@@ -99,8 +93,7 @@
 					if ($id != 0) {
 					   $query .= ' WHERE user.db_publisher_id = ?';
 					}
-					
-					
+
 					$result = $this->conn->prepare($query);
 					$numRows = $result->execute([$publisher['id']]);
 					
