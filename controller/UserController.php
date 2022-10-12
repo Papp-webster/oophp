@@ -88,7 +88,7 @@
 				if($id == $publisher['id']) {
 					
 					//Get users under publisher
-					$query = 'SELECT user.id, user.name_last, token_type.token_experied FROM user 
+					$query = 'SELECT user.id, user.name_last, token_type.token_id, token_type.token_experied FROM user 
 					LEFT JOIN token_type ON user.id = token_type.user_id';
 					if ($id != 0) {
 					   $query .= ' WHERE user.db_publisher_id = ?';
