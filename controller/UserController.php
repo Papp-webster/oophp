@@ -45,7 +45,6 @@
 				"exp" => $exp
 			  );
 			  $jwt = JWT::encode($payload,$this->key, 'HS512');
-			 
 			
 			  $token_data[] = array(
 				"token" => $jwt,
@@ -57,7 +56,6 @@
 		
 	  // Fetch all or a single user from database
 	  public function readUsers($id = 0) {
-		
 		
 		// Check token
 		$headers = apache_request_headers();
