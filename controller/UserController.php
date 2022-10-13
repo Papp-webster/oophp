@@ -88,11 +88,11 @@
 				if($id == $publisher['id']) {
 					
 					//Get users under publisher
-					$query = 'SELECT user.id, user.name_last, user.db_publisher_id, token_type.token_id, token_type.token_experied FROM user 
-					LEFT JOIN token_type ON user.id = token_type.user_id';
-					if ($id != 0) {
-					   $query .= ' WHERE user.db_publisher_id = ?';
-					}
+					$query = 'SELECT user.id, user.name_last, user.db_publisher_id, token_type.token_id, token_type.token_experied, 
+					token_permissions.table_id, token_permissions.permissions as permissions FROM user 
+					LEFT JOIN token_type ON user.id = token_type.user_id
+					LEFT JOIN token_permissions ON token_type.token_id = token_permissions.token_id 
+					WHERE user.db_publisher_id = ?';
 
 					$result = $this->conn->prepare($query);
 					$numRows = $result->execute([$publisher['id']]);
