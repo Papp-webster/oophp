@@ -66,10 +66,12 @@
 			$auth = $this->auth();
 			$token = $auth[0]['token'];
 
-	    //Get publisher token
-		$stmt = $this->conn->prepare('SELECT id FROM db_publisher WHERE api_token = ?');
+	    //Get token id
+		$stmt = $this->conn->prepare('SELECT token_id, token_token FROM token WHERE token_token = ?');
 		$stmt->execute([$bearerToken]);
-		$publisher = $stmt->fetch(PDO::FETCH_ASSOC);
+		$token_id = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		
 			
 			// Decode token
 			
@@ -83,23 +85,22 @@
 			
 			try {
 				 
-				if($id == $publisher['id']) {
+				if($id == $token_id['token_id']) {
 					
-					//Get users under publisher
-					$query = 'SELECT user.id, user.name_last, user.db_publisher_id, token_type.token_id, token_type.token_experied, 
-					token_permissions.table_id, token_permissions.permissions as permissions FROM user 
-					LEFT JOIN token_type ON user.id = token_type.user_id
-					LEFT JOIN token_permissions ON token_type.token_id = token_permissions.token_id 
-					WHERE user.db_publisher_id = ?';
+					//Get permissions
+					$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
+					token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
+					LEFT JOIN token_permissions ON token.token_id = token_permissions.token_id
+					WHERE token.token_id = ?';
 
 					$result = $this->conn->prepare($query);
-					$numRows = $result->execute([$publisher['id']]);
+					$numRows = $result->execute([$id]);
 					
 						if ($numRows > 0) {
 							while ($row = $result->fetchAll()) {
-								$data['Users'] = $row;
+								$data['token_data'] = $row;
 							}
-						
+							
 						return $data;
 						}
 				} else {
