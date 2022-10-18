@@ -91,10 +91,10 @@
 					$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
 					token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
 					LEFT JOIN token_permissions ON token.token_id = token_permissions.token_id
-					WHERE token.token_id = ?';
+					WHERE token.token_token = ?';
 
 					$result = $this->conn->prepare($query);
-					$numRows = $result->execute([$id]);
+					$numRows = $result->execute([$bearerToken]);
 					
 						if ($numRows > 0) {
 							while ($row = $result->fetchAll()) {
