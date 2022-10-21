@@ -67,7 +67,7 @@
 			$token = $auth[0]['token'];
 
 	    //Get token ids
-		$stmt = $this->conn->prepare('SELECT token_id, token_token FROM token WHERE token_token = ?');
+		$stmt = $this->conn->prepare('SELECT token_id, token_token, valid_to FROM token WHERE token_token = ?');
 		$stmt->execute([$bearerToken]);
 		$token_id = $stmt->fetchAll(PDO::FETCH_ASSOC);
          
@@ -82,15 +82,20 @@
 			// Check token expire
 			$iat = $decoded->iat;
 			$exp = $decoded->exp;
-
-			if($exp >= $iat) {
+            
+			$current_date = date("Y-m-d H:i:s", $iat);
+			
+			
 			
 			try {
                 
-				foreach($token_id as $token_ids) {
-					$ids = $token_ids['token_id'];
-					 
-                        while($ids == $id) {
+				foreach($token_id as $tokens) {
+					$token_ids = $tokens['token_id'];
+                    $valid = $tokens['valid_to'];
+					
+					
+                        while($token_ids == $id) {
+							if($valid >= $current_date) {
 							//Get permissions
 							$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
 							token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
@@ -106,18 +111,18 @@
 									}
 									
 								return $data;
-								} else {
-									return 'No data found';
 								}
+							} else {
+								return array('status' => 401, 'message' => 'Authentikációs token lejárt!');
+							}
 						}
-					}
+					
+				}
 					
 			} catch (\Exception $e) {
 				return false;
 			}
-		} else {
-			return array('status' => 401, 'message' => 'Authentikációs token lejárt!');
-		}
+		
 		} else {
 		   http_response_code(401);
 	            return print_r(json_encode(
