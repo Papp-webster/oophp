@@ -66,13 +66,15 @@
 			$auth = $this->auth();
 			$token = $auth[0]['token'];
 
-	    //Get token id
+	    //Get token ids
 		$stmt = $this->conn->prepare('SELECT token_id, token_token FROM token WHERE token_token = ?');
 		$stmt->execute([$bearerToken]);
-		$token_id = $stmt->fetch(PDO::FETCH_ASSOC);
-
+		$token_id = $stmt->fetchAll(PDO::FETCH_ASSOC);
+         
 		
-			
+		
+		
+		
 			// Decode token
 			
 			$decoded = JWT::decode($token, new Key($this->key, 'HS512'));
@@ -84,29 +86,32 @@
 			if($exp >= $iat) {
 			
 			try {
-				 
-				if($id == $token_id['token_id']) {
-					
-					//Get permissions
-					$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
-					token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
-					LEFT JOIN token_permissions ON token.token_id = token_permissions.token_id
-					WHERE token.token_token = ?';
-
-					$result = $this->conn->prepare($query);
-					$numRows = $result->execute([$bearerToken]);
-					
-						if ($numRows > 0) {
-							while ($row = $result->fetchAll()) {
-								$data['token_data'] = $row;
-							}
+                
+				foreach($token_id as $token_ids) {
+					$ids = $token_ids['token_id'];
+					 
+                        while($ids == $id) {
+							//Get permissions
+							$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
+							token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
+							LEFT JOIN token_permissions ON token.token_id = token_permissions.token_id
+							WHERE token.token_token = ?';
+		
+							$result = $this->conn->prepare($query);
+							$numRows = $result->execute([$bearerToken]);
 							
-						return $data;
+								if ($numRows > 0) {
+									while ($row = $result->fetchAll()) {
+										$data['token_data'] = $row;
+									}
+									
+								return $data;
+								} else {
+									return 'No data found';
+								}
 						}
-				} else {
+					}
 					
-					return array('message' => 'Nem található felhasználó!');
-				} 
 			} catch (\Exception $e) {
 				return false;
 			}
