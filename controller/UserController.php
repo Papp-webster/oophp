@@ -89,14 +89,15 @@
 			
 			try {
                 
-				foreach($token_id as $tokens) {
+				foreach ($token_id as $tokens) {
+					
 					$token_ids = $tokens['token_id'];
                     $valid = $tokens['valid_to'];
 					
-					
-                        while($token_ids == $id) {
+						while($token_ids == $id) {
+							//Check token validation
 							if($valid >= $current_date) {
-							//Get permissions
+							
 							$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
 							token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
 							LEFT JOIN token_permissions ON token.token_id = token_permissions.token_id
@@ -113,9 +114,9 @@
 								return $data;
 								}
 							} else {
-								return array('status' => 401, 'message' => 'Authentikációs token lejárt!');
+								return array('message' => 'Authentikációs token lejárt!');
 							}
-						}
+					    }  
 					
 				}
 					
