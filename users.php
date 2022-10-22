@@ -19,9 +19,9 @@ $id = intval($_GET['id'] ?? '');
 if ($api == 'GET') {
 	if($users->auth()) {
 		http_response_code(200);
-		echo json_encode(
+		/*echo json_encode(
 			$users->auth()
-		);
+		);*/
 		if ($id != 0) {
 			$data = $users->readUsers($id);
 		} else {
