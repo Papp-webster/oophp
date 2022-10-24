@@ -25,7 +25,11 @@ if ($api == 'GET') {
 		if ($id != 0) {
 			$data = $users->readUsers($id);
 		} else {
-			$data = $users->readUsers();
+			echo json_encode(
+				array(
+				"status" => 404,
+				'message' => 'Authentikációs token szükséges!'
+			));
 		}
 		echo json_encode($data);
    } else {
