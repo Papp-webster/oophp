@@ -93,15 +93,15 @@
 				foreach ($token_id as $tokens) {
 					
 					$token_ids = $tokens['token_id'];
-                    $valid = $tokens['valid_to'];
+					$token_token = $tokens['token_token'];
+
+					$valid = $tokens['valid_to'];
 					
 					$days=round(($iat-strtotime($valid))/60/60/24);
-
-					
 					
 						while($token_ids == $id) {
 							//Check token validation
-							if($valid >= $current_date) {
+							if(strtotime($valid) >= $iat) {
 							
 							$query = 'SELECT token.token_id, token.token_token, token.user_id, token.publisher_id, token.valid_to, 
 							token_permissions.module_name, token_permissions.read, token_permissions.write, token_permissions.delete FROM token 
