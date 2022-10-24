@@ -34,6 +34,7 @@
 			return $token;
 			
 		}*/
+
         // JWT token authorize 
 		public function auth() {
               $iat = time();
@@ -54,7 +55,7 @@
 			  return $token_data;
 		}
 		
-	  // Fetch all or a single user from database
+	  // Fetch single token id
 	  public function readUsers($id = 0) {
 		
 		// Check token
@@ -94,6 +95,10 @@
 					$token_ids = $tokens['token_id'];
                     $valid = $tokens['valid_to'];
 					
+					$days=round(($iat-strtotime($valid))/60/60/24);
+
+					
+					
 						while($token_ids == $id) {
 							//Check token validation
 							if($valid >= $current_date) {
@@ -114,7 +119,7 @@
 								return $data;
 								}
 							} else {
-								return array('message' => 'Authentikációs token lejárt!');
+								return array('message' => 'Authentikációs token '. $days .' napja lejárt!');
 							}
 					    }  
 					
@@ -136,11 +141,7 @@
 		
             /*token generator
 			$tokengenerate = implode($this->generateToken(60));*/
-			// token date current time 
-			//$current_date = date("Y-m-d H:i:s", time());
-			// token date time end
-			//$experied_time = strtotime($getToken['token_experied']);
-			// token experied time
+			
 			//$days=($experied_time-strtotime($getToken['token_created']))/86400;
 			
 					
@@ -153,11 +154,6 @@
 					$stmt->execute([$getToken['hit_count'] + 1,$token]);
 				}*/
 				
-				/* Token with experied date
-				if ($getToken['token_experied'] <= $current_date) {
-					return 'A token ' . round($days,0) . ' napig volt érvényes!';
-					die();
-				}*/ 
 
 					
 	  }
