@@ -1,4 +1,6 @@
 <?php
+	use Api\DB;
+	
 	// Include config.php file
 	include_once './db.php';
 	include_once './vendor/autoload.php';

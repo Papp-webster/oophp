@@ -1,5 +1,10 @@
 <?php
-	class DB {
+ 
+	namespace Api;
+
+	use PDO;
+	use PDOException;
+      class DB {
 	  
 	  // Database Details
 	  private const DBHOST = 'localhost';
