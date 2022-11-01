@@ -4,6 +4,7 @@
 
 	use PDO;
 	use PDOException;
+	
       class DB {
 	  
 	  // Database Details
